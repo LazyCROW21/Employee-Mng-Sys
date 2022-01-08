@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 
@@ -9,17 +10,12 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const employee = require('./routes/api/employee');
+const auth = require('./routes/auth');
 
-app.use('/api/employee', employee);
 
-// Handle production
-if (process.env.NODE_ENV === 'production') {
-  // Static folder
-  app.use(express.static(__dirname + '/public/'));
+app.use('/api/employee', auth.verifyToken, employee);
+app.use('/auth', auth.router);
 
-  // Handle SPA
-  app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
-}
 
 const port = process.env.PORT || 5000;
 

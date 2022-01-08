@@ -4,8 +4,12 @@ const router = express.Router();
 
 // Get Employees
 router.get('/', async (req, res) => {
-  const posts = await loadPostsCollection();
-  res.send(await posts.find({}).toArray());
+  const emps = [
+    {emp_id: 1, emp_name: 'hardik'},
+    {emp_id: 1, emp_name: 'hardik'},
+    {emp_id: 1, emp_name: 'hardik'},
+  ];
+  res.json(emps);
 });
 
 // Add Employee
