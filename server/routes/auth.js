@@ -49,7 +49,7 @@ router.post("/token", async (req, res) => {
 });
 
 // Delete Token
-app.delete('/logout', (req, res) => {
+router.delete('/logout', (req, res) => {
     refreshTokens = refreshTokens.filter(token => token !== req.body.refreshToken);
     res.status(204).json({message: 'Logout Successfull'});
 })
