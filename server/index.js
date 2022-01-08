@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
 
+
 const app = express();
 
 // Middleware
@@ -13,7 +14,7 @@ const employee = require('./routes/api/employee');
 const auth = require('./routes/auth');
 
 
-app.use('/api/employee', auth.verifyToken, employee);
+app.use('/api/employee', employee);
 app.use('/auth', auth.router);
 
 

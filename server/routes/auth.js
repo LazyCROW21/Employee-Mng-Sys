@@ -1,6 +1,16 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const EmployeeModal = require('../models/employee_model');
+const PostresClient = require('pg').Client;
+
+const pgClient = new PostresClient({
+  user: 'postgres',
+  password: 'root',
+  host: 'localhost',
+  port: 5432,
+  database: 'employee_db'
+});
 
 
 const router = express.Router();
@@ -10,22 +20,35 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "SUPERSECRET";
 let refreshTokens = [];
 
 function generateToken(data) {
-    return jwt.sign(user, ACCESS_TOKEN_SECRET, {expiresIn: '15m'});
+    return jwt.sign(data, ACCESS_TOKEN_SECRET, {expiresIn: '15m'});
 }
 
 // Login API
 router.post("/login", async (req, res) => {
-    const user = {
-        id: 7,
-        username: "LazyCROW",
-    };
-    const accessToken = generateToken(user);
-    const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET);
-    refreshTokens.push(refreshToken);
-    res.json({
-        accessToken: accessToken,
-        refreshToken: refreshToken
-    })
+    pgClient.connect().then(async() => {
+        console.log('Connected to DB for Auth');
+        const employeeModal = new EmployeeModal(pgClient);
+        var result = await employeeModal.loginCheck(req.body.id, req.body.pwd);
+        console.log(result);
+        if(result.rowCount !== 1) {
+            res.status(403).json({error: 'Invalid id/pwd'});
+            return;
+        }
+        let user = result.rows[0];
+        const accessToken = generateToken(user);
+        const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET);
+        refreshTokens.push(refreshToken);
+        res.json({
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        })
+    }).catch((err)=>{
+        console.log('Error while connecting to DB: '+err);
+        res.status(500).json({error: 'Internal Server Error'});
+    }).finally(()=>{
+        console.log('Closing AUTH DB Connection');
+        pgClient.end();
+    });
 });
 
 // Refresh Token
