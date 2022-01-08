@@ -29,7 +29,7 @@ router.post("/login", async (req, res) => {
         console.log('Connected to DB for Auth');
         const employeeModal = new EmployeeModal(pgClient);
         var result = await employeeModal.loginCheck(req.body.id, req.body.pwd);
-        console.log(result);
+        // console.log(result);
         if(result.rowCount !== 1) {
             res.status(403).json({error: 'Invalid id/pwd'});
             return;
