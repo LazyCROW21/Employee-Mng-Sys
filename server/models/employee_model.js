@@ -8,6 +8,9 @@ class Employee {
             'last_name',
             'phone',
             'email',
+            'dept_id',
+            'designation_id',
+            'salary'
         ];
         this.privateFields = ['pwd'];
     }
@@ -42,6 +45,45 @@ class Employee {
             WHERE ( email = $1 OR phone = $1 ) AND pwd = $2`;
         // console.log(query);
         return this.pgConnector.query(query, [id, pwd]);
+    }
+
+    insertColumns() {
+        var columns = this.publicFields[0];
+        for(let i = 1; i<this.publicFields.length; i++) {
+            columns += ', '+this.publicFields[i];
+        }
+        columns += ', '+this.privateFields[0];
+        for(let i = 1; i<this.privateFields.length; i++) {
+            columns += ', '+this.privateFields[i];
+        }
+        return columns;
+    }
+
+    insert(data) {
+        let placeholders = '$1';
+        for(let i=2; i<=(this.privateFields.length + this.privateFields.length); i++) {
+            placeholders += ', $'+i;
+        }
+        let query = `
+        INSERT INTO ${this.table} 
+        (${insertColumns()}) 
+        VALUES (${placeholders})`;
+        let dataArr = []
+        for(let i=0; i<this.publicFields.length; i++) {
+            if(data[this.publicFields[i]]) {
+                dataArr.push(data[this.publicFields[i]]);
+            } else {
+                return Promise.resolve(false);
+            }
+        }
+        for(let i=0; i<this.privateFields.length; i++) {
+            if(data[this.privateFields[i]]) {
+                dataArr.push(data[this.privateFields[i]]);
+            } else {
+                return Promise.resolve(false);
+            }
+        }
+        return this.pgConnector.query(query, dataArr);
     }
 };
 
