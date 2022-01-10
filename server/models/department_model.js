@@ -72,6 +72,13 @@ class Department {
         // }
         return this.pgConnector.query(query, dataArr);
     }
+
+    delete(id) {
+        let query = `
+        DELETE FROM ${this.table}
+	    WHERE ${this.primaryKey} = $1 RETURNING ${this.select()};`;
+        return this.pgConnector.query(query, [id]);
+    }
 };
 
 module.exports = Department

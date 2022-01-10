@@ -53,8 +53,20 @@ async function insertDeptDesg(req, res) {
     }
 }
 
+async function deleteDeptDesg(req, res) {
+    try {
+        var result = await deptDesgModal.delete(req.params.id);
+        console.log(result.rows[0]);
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
+}
+
 module.exports = {
     getAllDeptDesgs,
     getDeptDesgById,
-    insertDeptDesg
+    insertDeptDesg,
+    deleteDeptDesg
 };

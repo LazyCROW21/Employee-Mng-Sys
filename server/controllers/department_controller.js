@@ -52,8 +52,20 @@ async function insertDepartment(req, res) {
     }
 }
 
+async function deleteDepartment(req, res) {
+    try {
+        var result = await departmentModal.delete(req.params.id);
+        console.log(result.rows[0]);
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
+}
+
 module.exports = {
     getAllDepartments,
     getDepartmentById,
-    insertDepartment
+    insertDepartment,
+    deleteDepartment
 };

@@ -68,7 +68,7 @@ class Employee {
         INSERT INTO ${this.table} 
         (${this.insertColumns()}) 
         VALUES (${placeholders})
-        RETURNING (${this.select()})`;
+        RETURNING ${this.select()}`;
         console.log(query);
         let dataArr = []
         for(let i=0; i<this.publicFields.length; i++) {
@@ -86,6 +86,13 @@ class Employee {
             }
         }
         return this.pgConnector.query(query, dataArr);
+    }
+
+    delete(id) {
+        let query = `
+        DELETE FROM ${this.table}
+	    WHERE ${this.primaryKey} = $1 RETURNING ${this.select()};`;
+        return this.pgConnector.query(query, [id]);
     }
 };
 

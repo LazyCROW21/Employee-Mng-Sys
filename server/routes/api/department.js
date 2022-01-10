@@ -13,10 +13,6 @@ router.get('/:id', DepartmentController.getDepartmentById);
 router.post('/', DepartmentController.insertDepartment);
 
 // Delete Employee
-router.delete('/:id', async (req, res) => {
-  const posts = await loadPostsCollection();
-  await posts.deleteOne({ _id: new mongodb.ObjectID(req.params.id) });
-  res.status(200).send({});
-});
+router.delete('/:id', DepartmentController.deleteDepartment);
 
 module.exports = router;

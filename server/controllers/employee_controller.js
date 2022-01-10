@@ -52,8 +52,20 @@ async function insertEmployee(req, res) {
     }
 }
 
+async function deleteEmployee(req, res) {
+    try {
+        var result = await employeeModal.delete(req.params.id);
+        console.log(result.rows[0]);
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
+}
+
 module.exports = {
     getAllEmployees,
     getEmployeeById,
-    insertEmployee
+    insertEmployee,
+    deleteEmployee
 };

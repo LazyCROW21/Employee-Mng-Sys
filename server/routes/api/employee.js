@@ -13,10 +13,6 @@ router.get('/:id', EmployeeController.getEmployeeById);
 router.post('/', EmployeeController.insertEmployee);
 
 // Delete Employee
-router.delete('/:id', async (req, res) => {
-  const posts = await loadPostsCollection();
-  await posts.deleteOne({ _id: new mongodb.ObjectID(req.params.id) });
-  res.status(200).send({});
-});
+router.delete('/:id', EmployeeController.deleteEmployee);
 
 module.exports = router;
