@@ -46,7 +46,8 @@ async function insertEmployee(req, res) {
         var result = await employeeModal.insert(req.body);
         console.log(result);
         res.json(result);
-    } catch {
+    } catch (err) {
+        console.error(err);
         res.sendStatus(500);
     }
 }

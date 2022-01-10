@@ -61,13 +61,15 @@ class Employee {
 
     insert(data) {
         let placeholders = '$1';
-        for(let i=2; i<=(this.privateFields.length + this.privateFields.length); i++) {
+        for(let i=2; i<=(this.publicFields.length + this.privateFields.length); i++) {
             placeholders += ', $'+i;
         }
         let query = `
         INSERT INTO ${this.table} 
-        (${insertColumns()}) 
-        VALUES (${placeholders})`;
+        (${this.insertColumns()}) 
+        VALUES (${placeholders})
+        RETURNING id`;
+        console.log(query);
         let dataArr = []
         for(let i=0; i<this.publicFields.length; i++) {
             if(data[this.publicFields[i]]) {
