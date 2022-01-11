@@ -74,6 +74,39 @@ class DeptDesg {
         return this.pgConnector.query(query, dataArr);
     }
 
+    updateColumns(data) {
+        let setQrySet = [];
+        const updateKeys = Object.keys(data);
+        let dataArr = [];
+        let param_idx = 2;
+        for(let i=0; i<this.publicFields.length; i++) {
+            let idx = updateKeys.indexOf(this.publicFields[i])
+            if(idx > -1) {
+                // setquery += `${this.publicFields[i]} = $${i+2}`
+                setQrySet.push(this.publicFields[i]+` = $${param_idx}`);
+                param_idx++;
+                dataArr.push(data[updateKeys[idx]]);
+            }
+        }
+
+        // same as above from private fields
+        let setquery = setQrySet.join(', ');
+        return {setquery, dataArr}
+    }
+
+    update(id, data) {
+        let {setquery, dataArr} = this.updateColumns(data);
+        if(setquery.length == 0) {
+            return Promise.resolve(false);
+        }
+        let query = `
+        UPDATE ${this.table}
+        SET ${setquery}
+	    WHERE ${this.primaryKey} = $1 RETURNING ${this.select()};`;
+        console.log(query);
+        return this.pgConnector.query(query, [id, ...dataArr]);
+    }
+
     delete(id) {
         let query = `
         DELETE FROM ${this.table}

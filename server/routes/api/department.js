@@ -12,6 +12,9 @@ router.get('/:id', DepartmentController.getDepartmentById);
 // Add Department
 router.post('/', DepartmentController.insertDepartment);
 
+// Update Employee
+router.patch('/:id', DepartmentController.updateDepartment);
+
 // Delete Employee
 router.delete('/:id', DepartmentController.deleteDepartment);
 

@@ -13,6 +13,9 @@ router.get('/:id', EmployeeController.getEmployeeById);
 router.post('/', EmployeeController.insertEmployee);
 
 // Delete Employee
+// router.patch('/:id', EmployeeController.deleteEmployee);
+
+// Delete Employee
 router.delete('/:id', EmployeeController.deleteEmployee);
 
 module.exports = router;

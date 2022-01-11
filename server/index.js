@@ -11,10 +11,14 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const employee = require('./routes/api/employee');
+const department = require('./routes/api/department');
+const dept_desg = require('./routes/api/dept_desg');
 const auth = require('./routes/auth');
 
 
 app.use('/api/employee', employee);
+app.use('/api/department', department);
+app.use('/api/deptdesg', dept_desg);
 app.use('/auth', auth.router);
 
 
