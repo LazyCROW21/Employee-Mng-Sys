@@ -1,5 +1,6 @@
 const PostresClient = require("pg").Client;
 const EmployeeModal = require("../models/employee_model");
+const Validator = require('./validator');
 
 const pgClient = new PostresClient({
     user: "postgres",
@@ -43,6 +44,11 @@ async function getEmployeeById(req, res) {
 
 async function insertEmployee(req, res) {
     try {
+        let error = chkEmployeeData(req.body);
+        if(Object.keys(error).length != 0) {
+            res.status(400).json(error);
+            return;
+        }
         var result = await employeeModal.insert(req.body);
         console.log(result.rows[0]);
         res.json(result.rows[0]);
@@ -61,6 +67,35 @@ async function deleteEmployee(req, res) {
         console.error(err);
         res.sendStatus(500);
     }
+}
+
+function chkEmployeeData(data) {
+    let error = {};
+    if(!Validator.checkString(data.first_name, 1, 64)) {
+        error['first_name'] = 'Invalid';
+    }
+    if(!Validator.checkString(data.last_name, 1, 64)) {
+        error['last_name'] = 'Invalid';
+    }
+    if(!Validator.checkString(data.phone, 10, 10)) {
+        error['phone'] = 'Invalid';
+    }
+    if(!Validator.checkEmail(data.email)) {
+        error['email'] = 'Invalid';
+    }
+    if(!Validator.checkID(data.dept_id)) {
+        error['dept_id'] = 'Invalid';
+    }
+    if(!Validator.checkID(data.designation_id)) {
+        error['designation_id'] = 'Invalid';
+    }
+    if(!Validator.checkID(data.salary)) {
+        error['salary'] = 'Invalid';
+    }
+    if(!Validator.checkString(data.pwd, 6, 12)) {
+        error['pwd'] = 'Invalid';
+    }
+    return error;
 }
 
 module.exports = {
