@@ -1,5 +1,6 @@
 const PostresClient = require("pg").Client;
 const DepartmentModal = require("../models/department_model");
+const Validator = require('./validator');
 
 const pgClient = new PostresClient({
     user: "postgres",
@@ -43,6 +44,11 @@ async function getDepartmentById(req, res) {
 
 async function insertDepartment(req, res) {
     try {
+        let error = chkDepartmentData(req.body);
+        if(Object.keys(error).length != 0) {
+            res.status(400).json(error);
+            return;
+        }
         var result = await departmentModal.insert(req.body);
         console.log(result.rows[0]);
         res.json(result.rows[0]);
@@ -61,6 +67,14 @@ async function deleteDepartment(req, res) {
         console.error(err);
         res.sendStatus(500);
     }
+}
+
+function chkDepartmentData(data) {
+    let error = {};
+    if(!Validator.checkString(data.dept_name, 1, 128)) {
+        error['dept_name'] = 'Invalid';
+    }
+    return error;
 }
 
 module.exports = {

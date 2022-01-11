@@ -14,6 +14,24 @@ function checkString(strinp, minlen, maxlen) {
     return true;
 }
 
+function checkPhone(phoneinp) {
+    if(!phoneinp) {
+        return false;
+    }
+    if(typeof(phoneinp) != 'string') {
+        return false;
+    }
+    if(phoneinp.length != 10) {
+        return false;
+    }
+    const phoneRegex =
+        /^[0-9]{10}$/;
+    if (!phoneRegex.test(phoneinp)) {
+        return false;
+    }
+    return true;
+}
+
 function checkEmail(emailinp) {
     if(!emailinp) {
         return false;
@@ -51,5 +69,6 @@ function checkID(idinp) {
 module.exports = {
     checkString,
     checkEmail,
-    checkID
+    checkID,
+    checkPhone
 }

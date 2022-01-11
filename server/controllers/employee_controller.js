@@ -77,7 +77,7 @@ function chkEmployeeData(data) {
     if(!Validator.checkString(data.last_name, 1, 64)) {
         error['last_name'] = 'Invalid';
     }
-    if(!Validator.checkString(data.phone, 10, 10)) {
+    if(!Validator.checkPhone(data.phone)) {
         error['phone'] = 'Invalid';
     }
     if(!Validator.checkEmail(data.email)) {
