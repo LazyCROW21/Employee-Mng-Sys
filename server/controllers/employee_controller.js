@@ -1,23 +1,7 @@
-const PostresClient = require("pg").Client;
 const EmployeeModal = require("../models/employee_model");
+const pgClient = require('../config/dbconfig');
 const Validator = require('./validator');
 
-const pgClient = new PostresClient({
-    user: "postgres",
-    password: "root",
-    host: "localhost",
-    port: 5432,
-    database: "employee_db",
-});
-
-pgClient
-    .connect()
-    .then(() => {
-        console.log("Connected to DB");
-    })
-    .catch((err) => {
-        console.log("Error while connecting to DB: " + err);
-    });
 
 const employeeModal = new EmployeeModal(pgClient);
 
@@ -33,8 +17,16 @@ async function getAllEmployees(req, res) {
 }
 
 async function getEmployeeById(req, res) {
+    if(isNaN(req.params.id)) {
+        res.status(400).json({error: 'Invalid ID'});
+        return;
+    }
     try {
         var result = await employeeModal.findById(req.params.id);
+        if(!result) {
+            res.status(400).json({error: 'Invalid Data / DB error'});
+            return;
+        }
         console.table(result.rows);
         res.json(result.rows[0]);
     } catch {
@@ -50,6 +42,10 @@ async function insertEmployee(req, res) {
             return;
         }
         var result = await employeeModal.insert(req.body);
+        if(!result) {
+            res.status(400).json({error: 'Invalid Data / DB error'});
+            return;
+        }
         console.log(result.rows[0]);
         res.json(result.rows[0]);
     } catch (err) {
@@ -58,9 +54,41 @@ async function insertEmployee(req, res) {
     }
 }
 
+async function updateEmployee(req, res) {
+    if(isNaN(req.params.id)) {
+        res.status(400).json({error: 'Invalid ID'});
+        return;
+    }
+    try {
+        let error = updChkEmployeeData(req.body);
+        if(Object.keys(error).length != 0) {
+            res.status(400).json(error);
+            return;
+        }
+        var result = await employeeModal.update(req.params.id, req.body);
+        if(!result) {
+            res.status(400).json({error: 'Invalid Data / DB error'});
+            return;
+        }
+        console.log(result);
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
+}
+
 async function deleteEmployee(req, res) {
+    if(isNaN(req.params.id)) {
+        res.status(400).json({error: 'Invalid ID'});
+        return;
+    }
     try {
         var result = await employeeModal.delete(req.params.id);
+        if(!result) {
+            res.status(400).json({error: 'Invalid Data / DB error'});
+            return;
+        }
         console.log(result.rows[0]);
         res.json(result.rows[0]);
     } catch (err) {
@@ -98,9 +126,39 @@ function chkEmployeeData(data) {
     return error;
 }
 
+function updChkEmployeeData(data) {
+    let error = {};
+    if(data.first_name && !Validator.checkString(data.first_name, 1, 64)) {
+        error['first_name'] = 'Invalid';
+    }
+    if(data.last_name && !Validator.checkString(data.last_name, 1, 64)) {
+        error['last_name'] = 'Invalid';
+    }
+    if(data.phone && !Validator.checkPhone(data.phone)) {
+        error['phone'] = 'Invalid';
+    }
+    if(data.email && !Validator.checkEmail(data.email)) {
+        error['email'] = 'Invalid';
+    }
+    if(data.dept_id && !Validator.checkID(data.dept_id)) {
+        error['dept_id'] = 'Invalid';
+    }
+    if(data.designation_id && !Validator.checkID(data.designation_id)) {
+        error['designation_id'] = 'Invalid';
+    }
+    if(data.salary && !Validator.checkID(data.salary)) {
+        error['salary'] = 'Invalid';
+    }
+    if(data.pwd && !Validator.checkString(data.pwd, 6, 12)) {
+        error['pwd'] = 'Invalid';
+    }
+    return error;
+}
+
 module.exports = {
     getAllEmployees,
     getEmployeeById,
     insertEmployee,
-    deleteEmployee
+    deleteEmployee,
+    updateEmployee
 };

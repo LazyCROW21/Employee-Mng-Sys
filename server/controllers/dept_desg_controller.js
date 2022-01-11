@@ -1,23 +1,7 @@
-const PostresClient = require("pg").Client;
 const DeptDesgModal = require("../models/dept_desg_model");
 const Validator = require('./validator');
+const pgClient = require('../config/dbconfig');
 
-const pgClient = new PostresClient({
-    user: "postgres",
-    password: "root",
-    host: "localhost",
-    port: 5432,
-    database: "employee_db",
-});
-
-pgClient
-    .connect()
-    .then(() => {
-        console.log("Connected to DB");
-    })
-    .catch((err) => {
-        console.log("Error while connecting to DB: " + err);
-    });
 
 const deptDesgModal = new DeptDesgModal(pgClient);
 
