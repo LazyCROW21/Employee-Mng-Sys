@@ -115,15 +115,11 @@ function chkDeptDesgData(data) {
 
 function updChkDeptDesgData(data) {
     let error = {};
-    if(data.dept_id) {
-        if(!Validator.checkID(data.dept_id)) {
-            error['dept_id'] = 'Invalid';
-        }
+    if(('dept_id' in data) && !Validator.checkID(data.dept_id)) {
+        error['dept_id'] = 'Invalid';
     }
-    if(data.designation) {
-        if(!Validator.checkString(data.designation, 1, 64)) {
-            error['designation'] = 'Invalid';
-        }
+    if(('designation' in data) && !Validator.checkString(data.designation, 1, 64)) {
+        error['designation'] = 'Invalid';
     }
     return error;
 }

@@ -128,28 +128,28 @@ function chkEmployeeData(data) {
 
 function updChkEmployeeData(data) {
     let error = {};
-    if(data.first_name && !Validator.checkString(data.first_name, 1, 64)) {
+    if(('first_name' in data) && !Validator.checkString(data.first_name, 1, 64)) {
         error['first_name'] = 'Invalid';
     }
-    if(data.last_name && !Validator.checkString(data.last_name, 1, 64)) {
+    if(('last_name' in data) && !Validator.checkString(data.last_name, 1, 64)) {
         error['last_name'] = 'Invalid';
     }
-    if(data.phone && !Validator.checkPhone(data.phone)) {
+    if(('phone' in data) && !Validator.checkPhone(data.phone)) {
         error['phone'] = 'Invalid';
     }
-    if(data.email && !Validator.checkEmail(data.email)) {
+    if(('email' in data) && !Validator.checkEmail(data.email)) {
         error['email'] = 'Invalid';
     }
-    if(data.dept_id && !Validator.checkID(data.dept_id)) {
+    if(('dept_id' in data) && !Validator.checkID(data.dept_id)) {
         error['dept_id'] = 'Invalid';
     }
-    if(data.designation_id && !Validator.checkID(data.designation_id)) {
+    if(('designation_id' in data) && !Validator.checkID(data.designation_id)) {
         error['designation_id'] = 'Invalid';
     }
-    if(data.salary && !Validator.checkID(data.salary)) {
+    if(('salary' in data) && !Validator.checkID(data.salary)) {
         error['salary'] = 'Invalid';
     }
-    if(data.pwd && !Validator.checkString(data.pwd, 6, 12)) {
+    if(('pwd' in data) && !Validator.checkString(data.pwd, 6, 12)) {
         error['pwd'] = 'Invalid';
     }
     return error;
