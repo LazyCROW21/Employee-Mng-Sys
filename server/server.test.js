@@ -154,6 +154,90 @@ describe("POST /employee", () => {
     });
 });
 
+describe("PATCH /employee/:id", () => {
+    describe("When correct data & id is passed", () => {
+        test("should respond with status code 200", async () => {
+            var id = 1;
+            var Obj = {
+                "first_name": "Opal",
+                "last_name": "Raycroft",
+                "phone": "8234802021",
+                "email": "OpalRaycroft@columbia.edu",
+                "dept_id": 1,
+                "designation_id": 1,
+                "salary": 12000
+            };
+            const response = await request.patch("/api/employee/"+id).send(Obj);
+            expect(response.statusCode).toBe(200);
+        });
+
+        test("should return json header", async () => {
+            var id = 1;
+            var Obj = {
+                "first_name": "Opal",
+                "last_name": "Raycroft",
+                "phone": "8234802021",
+                "email": "OpalRaycroft@columbia.edu",
+                "dept_id": 1,
+                "designation_id": 1,
+                "salary": 12000
+            };
+            const response = await request.patch("/api/employee/"+id).send(Obj);
+            expect(response.headers['content-type']).toEqual(expect.stringContaining('json'));
+        });
+
+        test("should return inserted json object with id", async () => {
+            var Obj = {
+                "first_name": "Opal",
+                "last_name": "Raycroft",
+                "phone": "8234802021",
+                "email": "qqqeq@asd.edu",
+                "dept_id": 1,
+                "designation_id": 1,
+                "salary": 12000
+            };
+            const response = await request.post("/api/employee").send(Obj);
+            var respObj = response.body;
+            var isObj = false;
+            if (typeof respObj === 'object' && respObj !== null) {
+                isObj = true;
+            }
+            expect(isObj).toBe(true);
+            expect(respObj.id).toBeDefined();
+        });
+    });
+    describe("When invalid id is passed", () => {
+        test("should respond with status code 400", async () => {
+            var Obj = {
+                "first_name": "ASDADQ",
+                "last_name": null,
+                "phone": "823as02021",
+                "email": "not an email",
+                "dept_id": -1,
+                "designation_id": 1,
+                "salary": null
+            };
+            const response = await request.post("/api/employee").send(Obj);
+            expect(response.statusCode).toBe(400);
+        });
+    });
+    describe("When invalid data is passed", () => {
+        test("should respond with status code 400", async () => {
+            var Obj = {
+                "first_name": "ASDADQ",
+                "last_name": null,
+                "phone": "823as02021",
+                "email": "not an email",
+                "dept_id": -1,
+                "designation_id": 1,
+                "salary": null
+            };
+            const response = await request.post("/api/employee").send(Obj);
+            expect(response.statusCode).toBe(400);
+        });
+    });
+});
+
 describe("DELETE /employee/:id", () => {
     describe("When valid id data is passed", () => {
         test("should respond with status code 200", async () => {
