@@ -1,16 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const EmployeeModal = require('../models/employee_model');
-const PostresClient = require('pg').Client;
-
-const pgClient = new PostresClient({
-  user: 'postgres',
-  password: 'root',
-  host: 'localhost',
-  port: 5432,
-  database: 'employee_db'
-});
+const pgClient = require('../config/dbconfig');
 
 
 const router = express.Router();
@@ -20,64 +11,76 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "SUPERSECRET";
 let refreshTokens = [];
 
 function generateToken(data) {
-    return jwt.sign(data, ACCESS_TOKEN_SECRET, {expiresIn: '15m'});
+    return jwt.sign(data, ACCESS_TOKEN_SECRET, {
+        expiresIn: '15m'
+    });
 }
 
 // Login API
 router.post("/login", async (req, res) => {
-    pgClient.connect().then(async() => {
-        console.log('Connected to DB for Auth');
-        let query = `
+    if (!req.body.email && !req.body.pwd) {
+        res.status(400).json({
+            error: 'Invalid Input'
+        });
+        return;
+    }
+
+    let query = `
         SELECT id, email 
         FROM users
         WHERE ( email = $1 ) AND ( pwd = $2 )`;
-        var result = await pgClient.query(query, [id, pwd]);
-        // console.log(result);
-        if(result.rowCount !== 1) {
-            res.status(403).json({error: 'Invalid id/pwd'});
-            return;
-        }
-        let user = result.rows[0];
-        const accessToken = generateToken(user);
-        const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET);
-        refreshTokens.push(refreshToken);
-        res.json({
-            accessToken: accessToken,
-            refreshToken: refreshToken
-        })
-    }).catch((err)=>{
-        console.log('Error while connecting to DB: '+err);
-        res.status(500).json({error: 'Internal Server Error'});
-    }).finally(()=>{
-        console.log('Closing AUTH DB Connection');
-        pgClient.end();
-    });
+    var result = await pgClient.query(query, [req.body.email, req.body.pwd]);
+    // console.log(result);
+    if (result.rowCount !== 1) {
+        res.status(403).json({
+            error: 'Invalid id/pwd'
+        });
+        return;
+    }
+    let user = result.rows[0];
+    const accessToken = generateToken(user);
+    const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET);
+    refreshTokens.push(refreshToken);
+    res.json({
+        accessToken: accessToken,
+        refreshToken: refreshToken
+    })
 });
 
 // Refresh Token
 router.post("/token", async (req, res) => {
     const refreshToken = req.body.refreshToken;
-    if(refreshToken == null) {
-        res.status(401).json({error: 'Refresh Token Not Found'});
+    if (refreshToken == null) {
+        res.status(401).json({
+            error: 'Refresh Token Not Found'
+        });
     }
-    if(!refreshTokens.includes(refreshToken)) {
-        res.status(403).json({error: 'Refresh Token Not Valid'});
+    if (!refreshTokens.includes(refreshToken)) {
+        res.status(403).json({
+            error: 'Refresh Token Not Valid'
+        });
     }
     try {
         const decode = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
         // req.user = decoded;
         const accessToken = generateToken(decode);
-        res.json({accessToken: accessToken});
+        res.json({
+            accessToken: accessToken
+        });
     } catch (error) {
         console.log(error);
-        res.status(403).json({error: 'Token Expired'});
+        res.status(403).json({
+            error: 'Token Expired'
+        });
     }
 });
 
 // Delete Token
 router.delete('/logout', (req, res) => {
     refreshTokens = refreshTokens.filter(token => token !== req.body.refreshToken);
-    res.status(204).json({message: 'Logout Successfull'});
+    res.status(204).json({
+        message: 'Logout Successfull'
+    });
 })
 
 function verifyToken(req, res, next) {
@@ -94,12 +97,19 @@ function verifyToken(req, res, next) {
             next();
         } catch (error) {
             console.log(error);
-            res.status(403).json({error: 'Token Expired'});
+            res.status(403).json({
+                error: 'Token Expired'
+            });
         }
     } else {
         // Forbidden
-        res.status(403).json({error: 'Token Not Found'});
+        res.status(403).json({
+            error: 'Token Not Found'
+        });
     }
 }
 
-module.exports = {router, verifyToken};
+module.exports = {
+    router,
+    verifyToken
+};
