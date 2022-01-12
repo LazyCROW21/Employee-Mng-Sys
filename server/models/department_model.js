@@ -53,7 +53,7 @@ class Department {
         INSERT INTO ${this.table} 
         (${this.insertColumns()}) 
         VALUES (${placeholders})
-        RETURNING (${this.select()})`;
+        RETURNING ${this.select()}`;
         console.log(query);
         let dataArr = []
         for(let i=0; i<this.publicFields.length; i++) {
