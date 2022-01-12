@@ -120,9 +120,9 @@ function chkEmployeeData(data) {
     if(!Validator.checkID(data.salary)) {
         error['salary'] = 'Invalid';
     }
-    if(!Validator.checkString(data.pwd, 6, 12)) {
-        error['pwd'] = 'Invalid';
-    }
+    // if(!Validator.checkString(data.pwd, 6, 12)) {
+    //     error['pwd'] = 'Invalid';
+    // }
     return error;
 }
 
@@ -149,9 +149,9 @@ function updChkEmployeeData(data) {
     if(('salary' in data) && !Validator.checkID(data.salary)) {
         error['salary'] = 'Invalid';
     }
-    if(('pwd' in data) && !Validator.checkString(data.pwd, 6, 12)) {
-        error['pwd'] = 'Invalid';
-    }
+    // if(('pwd' in data) && !Validator.checkString(data.pwd, 6, 12)) {
+    //     error['pwd'] = 'Invalid';
+    // }
     return error;
 }
 

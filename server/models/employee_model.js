@@ -12,7 +12,7 @@ class Employee {
             'designation_id',
             'salary'
         ];
-        this.privateFields = ['pwd'];
+        this.privateFields = []; //'pwd'
     }
 
     select() {
@@ -38,24 +38,24 @@ class Employee {
         );
     }
 
-    loginCheck(id, pwd) {
-        let query = `
-            SELECT ${this.primaryKey} 
-            FROM ${this.table} 
-            WHERE ( email = $1 OR phone = $1 ) AND pwd = $2`;
-        // console.log(query);
-        return this.pgConnector.query(query, [id, pwd]);
-    }
+    // loginCheck(id, pwd) {
+    //     let query = `
+    //         SELECT ${this.primaryKey} 
+    //         FROM ${this.table} 
+    //         WHERE ( email = $1 OR phone = $1 ) AND pwd = $2`;
+    //     // console.log(query);
+    //     return this.pgConnector.query(query, [id, pwd]);
+    // }
 
     insertColumns() {
         var columns = this.publicFields[0];
         for(let i = 1; i<this.publicFields.length; i++) {
             columns += ', '+this.publicFields[i];
         }
-        columns += ', '+this.privateFields[0];
-        for(let i = 1; i<this.privateFields.length; i++) {
-            columns += ', '+this.privateFields[i];
-        }
+        // columns += ', '+this.privateFields[0];
+        // for(let i = 1; i<this.privateFields.length; i++) {
+        //     columns += ', '+this.privateFields[i];
+        // }
         return columns;
     }
 
@@ -78,13 +78,13 @@ class Employee {
                 return Promise.resolve(false);
             }
         }
-        for(let i=0; i<this.privateFields.length; i++) {
-            if(data[this.privateFields[i]]) {
-                dataArr.push(data[this.privateFields[i]]);
-            } else {
-                return Promise.resolve(false);
-            }
-        }
+        // for(let i=0; i<this.privateFields.length; i++) {
+        //     if(data[this.privateFields[i]]) {
+        //         dataArr.push(data[this.privateFields[i]]);
+        //     } else {
+        //         return Promise.resolve(false);
+        //     }
+        // }
         return this.pgConnector.query(query, dataArr);
     }
 
@@ -104,15 +104,15 @@ class Employee {
             }
         }
 
-        for(let i=0; i<this.privateFields.length; i++) {
-            let idx = updateKeys.indexOf(this.privateFields[i])
-            if(idx > -1) {
-                // setquery += `${this.publicFields[i]} = $${i+2}`
-                setQrySet.push(this.privateFields[i]+` = $${param_idx}`);
-                param_idx++;
-                dataArr.push(data[updateKeys[idx]]);
-            }
-        }
+        // for(let i=0; i<this.privateFields.length; i++) {
+        //     let idx = updateKeys.indexOf(this.privateFields[i])
+        //     if(idx > -1) {
+        //         // setquery += `${this.publicFields[i]} = $${i+2}`
+        //         setQrySet.push(this.privateFields[i]+` = $${param_idx}`);
+        //         param_idx++;
+        //         dataArr.push(data[updateKeys[idx]]);
+        //     }
+        // }
 
         let setquery = setQrySet.join(', ');
         return {setquery, dataArr}

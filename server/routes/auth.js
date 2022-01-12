@@ -27,8 +27,11 @@ function generateToken(data) {
 router.post("/login", async (req, res) => {
     pgClient.connect().then(async() => {
         console.log('Connected to DB for Auth');
-        const employeeModal = new EmployeeModal(pgClient);
-        var result = await employeeModal.loginCheck(req.body.id, req.body.pwd);
+        let query = `
+        SELECT id, email 
+        FROM users
+        WHERE ( email = $1 ) AND ( pwd = $2 )`;
+        var result = await pgClient.query(query, [id, pwd]);
         // console.log(result);
         if(result.rowCount !== 1) {
             res.status(403).json({error: 'Invalid id/pwd'});
