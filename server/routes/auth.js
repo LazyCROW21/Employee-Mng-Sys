@@ -48,7 +48,7 @@ router.post("/login", async (req, res) => {
 });
 
 // Refresh Token
-router.post("/token", async (req, res) => {
+router.post("/token", verifyToken, async (req, res) => {
     const refreshToken = req.body.refreshToken;
     if (refreshToken == null) {
         res.status(401).json({
@@ -76,7 +76,7 @@ router.post("/token", async (req, res) => {
 });
 
 // Delete Token
-router.delete('/logout', (req, res) => {
+router.delete('/logout', verifyToken, (req, res) => {
     refreshTokens = refreshTokens.filter(token => token !== req.body.refreshToken);
     res.status(204).json({
         message: 'Logout Successfull'
