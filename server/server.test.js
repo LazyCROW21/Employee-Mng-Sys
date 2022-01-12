@@ -30,7 +30,7 @@ describe("GET /employee", () => {
             const response = await request.get("/api/employee/1").send();
             expect(response.statusCode).toBe(200);
         });
-        
+
         test("should return json object & header", async () => {
             const response = await request.get("/api/employee/1").send();
             var Obj = response.body;
@@ -52,7 +52,7 @@ describe("GET /employee", () => {
             // var isValidObj = true;
             var Obj = response.body;
             var reqField = [
-                'id', 
+                'id',
                 'first_name',
                 'last_name',
                 'phone',
@@ -79,8 +79,8 @@ describe("GET /employee", () => {
             // expect(isValidObj).toBe(true);
         });
     });
-    describe("When invalid parameter is passed", ()=>{
-        test("should respond with status code 400", async()=>{
+    describe("When invalid parameter is passed", () => {
+        test("should respond with status code 400", async () => {
             const response = await request.get("/api/employee/wrongid").send();
             expect(response.statusCode).toBe(400);
         });
@@ -157,46 +157,47 @@ describe("POST /employee", () => {
 describe("PATCH /employee/:id", () => {
     describe("When correct data & id is passed", () => {
         test("should respond with status code 200", async () => {
-            var id = 1;
+            var id = 2;
             var Obj = {
                 "first_name": "Opal",
                 "last_name": "Raycroft",
                 "phone": "8234802021",
-                "email": "OpalRaycroft@columbia.edu",
+                "email": "newemail@idk.edu",
                 "dept_id": 1,
                 "designation_id": 1,
                 "salary": 12000
             };
-            const response = await request.patch("/api/employee/"+id).send(Obj);
+            const response = await request.patch("/api/employee/" + id).send(Obj);
             expect(response.statusCode).toBe(200);
         });
 
         test("should return json header", async () => {
-            var id = 1;
+            var id = 2;
             var Obj = {
                 "first_name": "Opal",
                 "last_name": "Raycroft",
-                "phone": "8234802021",
-                "email": "OpalRaycroft@columbia.edu",
+                "phone": "8234802001",
+                "email": "asdzxc@had.edu",
                 "dept_id": 1,
                 "designation_id": 1,
                 "salary": 12000
             };
-            const response = await request.patch("/api/employee/"+id).send(Obj);
+            const response = await request.patch("/api/employee/" + id).send(Obj);
             expect(response.headers['content-type']).toEqual(expect.stringContaining('json'));
         });
 
-        test("should return inserted json object with id", async () => {
+        test("should return updated json object with id", async () => {
+            var id = 2;
             var Obj = {
                 "first_name": "Opal",
                 "last_name": "Raycroft",
-                "phone": "8234802021",
-                "email": "qqqeq@asd.edu",
+                "phone": "8234802001",
+                "email": "asdzxc@had.edu",
                 "dept_id": 1,
                 "designation_id": 1,
                 "salary": 12000
             };
-            const response = await request.post("/api/employee").send(Obj);
+            const response = await request.patch("/api/employee/" + id).send(Obj);
             var respObj = response.body;
             var isObj = false;
             if (typeof respObj === 'object' && respObj !== null) {
@@ -208,21 +209,23 @@ describe("PATCH /employee/:id", () => {
     });
     describe("When invalid id is passed", () => {
         test("should respond with status code 400", async () => {
+            var id = 'novalid';
             var Obj = {
                 "first_name": "ASDADQ",
-                "last_name": null,
+                "last_name": 'ASDQV',
                 "phone": "823as02021",
-                "email": "not an email",
-                "dept_id": -1,
+                "email": "valid@gma.com",
+                "dept_id": 1,
                 "designation_id": 1,
-                "salary": null
+                "salary": 989898
             };
-            const response = await request.post("/api/employee").send(Obj);
+            const response = await request.patch("/api/employee/" + id).send(Obj);
             expect(response.statusCode).toBe(400);
         });
     });
     describe("When invalid data is passed", () => {
         test("should respond with status code 400", async () => {
+            var id = 2;
             var Obj = {
                 "first_name": "ASDADQ",
                 "last_name": null,
@@ -232,7 +235,7 @@ describe("PATCH /employee/:id", () => {
                 "designation_id": 1,
                 "salary": null
             };
-            const response = await request.post("/api/employee").send(Obj);
+            const response = await request.patch("/api/employee/" + id).send(Obj);
             expect(response.statusCode).toBe(400);
         });
     });
@@ -242,19 +245,19 @@ describe("DELETE /employee/:id", () => {
     describe("When valid id data is passed", () => {
         test("should respond with status code 200", async () => {
             var id = 14;
-            const response = await request.delete("/api/employee/"+id).send();
+            const response = await request.delete("/api/employee/" + id).send();
             expect(response.statusCode).toBe(200);
         });
 
         test("should return json header", async () => {
             var id = 12;
-            const response = await request.delete("/api/employee/"+id).send();
+            const response = await request.delete("/api/employee/" + id).send();
             expect(response.headers['content-type']).toEqual(expect.stringContaining('json'));
         });
 
         test("should return deleted json object with id", async () => {
             var id = 15;
-            const response = await request.delete("/api/employee/"+id).send();
+            const response = await request.delete("/api/employee/" + id).send();
             var respObj = response.body;
             var isObj = false;
             if (typeof respObj === 'object' && respObj !== null) {
@@ -267,7 +270,7 @@ describe("DELETE /employee/:id", () => {
     describe("When invalid data is passed", () => {
         test("should respond with status code 400", async () => {
             var id = 'asdad';
-            const response = await request.delete("/api/employee/"+id).send();
+            const response = await request.delete("/api/employee/" + id).send();
             expect(response.statusCode).toBe(400);
         });
     });
