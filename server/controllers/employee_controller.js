@@ -8,7 +8,7 @@ const employeeModal = new EmployeeModal(pgClient);
 async function getAllEmployees(req, res) {
     try {
         var result = await employeeModal.findAll();
-        console.table(result.rows);
+        // console.table(result.rows);
         res.json(result.rows);
     } catch (err) {
         console.error(err);
@@ -27,7 +27,7 @@ async function getEmployeeById(req, res) {
             res.status(400).json({error: 'Invalid Data / DB error'});
             return;
         }
-        console.table(result.rows);
+        // console.table(result.rows);
         res.json(result.rows[0]);
     } catch {
         res.sendStatus(500);
@@ -46,7 +46,7 @@ async function insertEmployee(req, res) {
             res.status(400).json({error: 'Invalid Data / DB error'});
             return;
         }
-        console.log(result.rows[0]);
+        // console.log(result.rows[0]);
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err);
@@ -70,7 +70,7 @@ async function updateEmployee(req, res) {
             res.status(400).json({error: 'Invalid Data / DB error'});
             return;
         }
-        console.log(result);
+        // console.log(result);
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err);
@@ -89,7 +89,7 @@ async function deleteEmployee(req, res) {
             res.status(400).json({error: 'Invalid Data / DB error'});
             return;
         }
-        console.log(result.rows[0]);
+        // console.log(result.rows[0]);
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err);

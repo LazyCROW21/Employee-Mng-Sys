@@ -69,7 +69,7 @@ class Employee {
         (${this.insertColumns()}) 
         VALUES (${placeholders})
         RETURNING ${this.select()}`;
-        console.log(query);
+        // console.log(query);
         let dataArr = []
         for(let i=0; i<this.publicFields.length; i++) {
             if(data[this.publicFields[i]]) {
@@ -127,7 +127,7 @@ class Employee {
         UPDATE ${this.table}
         SET ${setquery}
 	    WHERE ${this.primaryKey} = $1 RETURNING ${this.select()};`;
-        console.log(query);
+        // console.log(query);
         return this.pgConnector.query(query, [id, ...dataArr]);
     }
 

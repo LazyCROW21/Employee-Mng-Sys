@@ -12,7 +12,7 @@ async function getAllDepartments(req, res) {
             res.status(400).json({error: 'Invalid Data / DB error'});
             return;
         }
-        console.table(result.rows);
+        // console.table(result.rows);
         res.json(result.rows);
     } catch (err) {
         console.error(err);
@@ -31,7 +31,7 @@ async function getDepartmentById(req, res) {
             res.status(400).json({error: 'Invalid Data / DB error'});
             return;
         }
-        console.table(result.rows);
+        // console.table(result.rows);
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err);
@@ -51,7 +51,7 @@ async function insertDepartment(req, res) {
             res.status(400).json({error: 'Invalid Data / DB error'});
             return;
         }
-        console.log(result.rows[0]);
+        // console.log(result.rows[0]);
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err);
@@ -75,7 +75,7 @@ async function updateDepartment(req, res) {
             res.status(400).json({error: 'Invalid Data / DB error'});
             return;
         }
-        console.log(result);
+        // console.log(result);
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err);
@@ -94,7 +94,7 @@ async function deleteDepartment(req, res) {
             res.status(400).json({error: 'Invalid Data / DB error'});
             return;
         }
-        console.log(result.rows[0]);
+        // console.log(result.rows[0]);
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err);

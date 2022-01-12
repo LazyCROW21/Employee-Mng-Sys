@@ -13,10 +13,10 @@ const pgClient = new PostresClient({
 pgClient
     .connect()
     .then(() => {
-        console.log("Connected to DB");
+        // console.log("Connected to DB");
     })
     .catch((err) => {
-        console.log("Error while connecting to DB: " + err);
+        // console.log("Error while connecting to DB: " + err);
     });
 
 module.exports = pgClient;
